@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
+    id("kotlin-android")
+
 }
 
 android {
@@ -13,11 +15,6 @@ android {
         targetSdk = Dependencies.Android.COMPILE_SDK
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
@@ -27,11 +24,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -47,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:holder"))
 
     implementation(Dependencies.Android.androidCore)
     implementation(Dependencies.Android.lifecycle)
@@ -57,7 +55,4 @@ dependencies {
     implementation(Dependencies.Android.Compose.ui)
     implementation(Dependencies.Android.Compose.material)
     implementation(Dependencies.Android.Compose.toolingPreview)
-
-    testImplementation("junit:junit:4.13.2")
-
 }
