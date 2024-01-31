@@ -1,6 +1,7 @@
 package com.myeong.prography.photos
 
 import DefaultIndicator
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -70,32 +73,43 @@ fun PhotosView(
 ) {
     val photosPagingItems: LazyPagingItems<Photo> = photosPagingFlow.collectAsLazyPagingItems()
     val listState = rememberLazyStaggeredGridState()
-    LazyVerticalStaggeredGrid(
-        state = listState,
-        modifier = Modifier.padding(10.dp),
-        columns = StaggeredGridCells.FixedSize(166.dp),
-        verticalItemSpacing = 10.dp,
-        horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally)
-    ) {
-        items(photosPagingItems.itemCount) { index ->
-            photosPagingItems[index]?.let { photo ->
-                GridPhotoItem(photo)
-            }
-        }
-        photosPagingItems.apply {
-            when {
-                loadState.refresh is LoadState.Loading -> {
-                    (this@LazyVerticalStaggeredGrid).photoSkeleton()
+    val appendLoading = remember {
+        mutableStateOf(false)
+    }
+    Box {
+        LazyVerticalStaggeredGrid(
+            state = listState,
+            modifier = Modifier.padding(10.dp),
+            columns = StaggeredGridCells.FixedSize(166.dp),
+            verticalItemSpacing = 10.dp,
+            horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally)
+        ) {
+            items(photosPagingItems.itemCount) { index ->
+                photosPagingItems[index]?.let { photo ->
+                    GridPhotoItem(photo)
                 }
+            }
+            photosPagingItems.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        (this@LazyVerticalStaggeredGrid).photoSkeleton()
+                    }
 
-                loadState.append is LoadState.Loading -> {
-                    item {
-                        AppendLoading()
+                    loadState.append is LoadState.Loading -> {
+                        appendLoading.value = true
+                    }
+
+                    loadState.append is LoadState.NotLoading -> {
+                        appendLoading.value = false
                     }
                 }
             }
         }
+        if (appendLoading.value) {
+            AppendLoading(modifier = Modifier.align(Alignment.BottomCenter))
+        }
     }
+
 }
 
 @Composable
@@ -177,11 +191,12 @@ fun PhotoSkeletonItem(
 }
 
 @Composable
-fun AppendLoading() {
+fun AppendLoading(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
+            .background(Color.White)
     ) {
         DefaultIndicator(modifier = Modifier.align(Alignment.Center))
     }
