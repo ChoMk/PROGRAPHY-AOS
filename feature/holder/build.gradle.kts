@@ -4,7 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation(Dependencies.JetBrains.Kotlin.collectionsImmutable)
     implementation(Dependencies.Android.Compose.viewModel)
-
 }
