@@ -13,12 +13,15 @@ data class PhotoResponse(
     val description: String = "",
     val urls: UrlResponse = UrlResponse()
 )
+
 @Serializable
 data class UserResponse(
     val username: String = "",
     val name: String = ""
 )
+
 @Serializable
 data class UrlResponse(
-    val raw: String = ""
+    val full: String = "",
+    val small: String = "",
 )
