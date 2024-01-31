@@ -17,4 +17,6 @@ dependencies{
     implementation(Dependencies.Android.Compose.material)
     implementation(Dependencies.Android.Compose.toolingPreview)
     implementation(Dependencies.Android.Compose.tooling)
+    implementation(Dependencies.Android.Compose.viewModel)
+
 }

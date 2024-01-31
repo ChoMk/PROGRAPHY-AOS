@@ -10,12 +10,12 @@ import source.request.LoadPhotosOption
  * Created by MyeongKi.
  */
 class LoadPhotosComposPagingSource(
-    private val photoRepository: PhotoRepository,
+    private val remoteDataSource: PhotoDataSource,
 ) : PagingSource<Int, Photo>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         try {
             val currentPage = params.key ?: START_PAGE
-            val result = photoRepository.loadPhotos(
+            val result = remoteDataSource.loadPhotos(
                 requestOption = LoadPhotosOption(
                     page = currentPage,
                     pageSize = PAGE_SIZE
@@ -39,8 +39,4 @@ class LoadPhotosComposPagingSource(
         return START_PAGE
     }
 
-    companion object {
-        private const val START_PAGE = 1
-        private const val PAGE_SIZE = 10
-    }
 }

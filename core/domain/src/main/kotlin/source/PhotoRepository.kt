@@ -1,12 +1,12 @@
 package source
 
+import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import model.Photo
-import source.request.LoadPhotosOption
 
 /**
  * Created by MyeongKi.
  */
 interface PhotoRepository {
-    fun loadPhotos(requestOption: LoadPhotosOption): Flow<List<Photo>>
+    fun loadPhotos(): Flow<PagingData<Photo>>
 }

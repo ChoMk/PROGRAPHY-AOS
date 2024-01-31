@@ -4,5 +4,4 @@ plugins {
 }
 
 dependencies {
-    implementation(Dependencies.Android.Compose.viewModel)
 }
