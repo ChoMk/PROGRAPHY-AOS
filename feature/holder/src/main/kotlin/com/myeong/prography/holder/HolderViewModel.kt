@@ -3,7 +3,6 @@ package com.myeong.prography.holder
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myeong.prography.holder.HolderIntent.Companion.toEvent
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +42,6 @@ class HolderViewModel : ViewModel() {
             )
         }
 
-    @OptIn(ExperimentalStdlibApi::class)
     val uiState: StateFlow<HolderUiState> = merge(
         navigateComponentFlow,
     )
@@ -51,7 +49,6 @@ class HolderViewModel : ViewModel() {
             viewModelScope,
             SharingStarted.Eagerly,
             HolderUiState(
-                holderComponent = HolderComponent.entries.toImmutableList(),
                 selectedComponent = HolderComponent.PHOTOS
             )
         )
