@@ -23,3 +23,6 @@ android {
         }
     }
 }
+dependencies {
+    implementation(Dependencies.JetBrains.Coroutines.core)
+}

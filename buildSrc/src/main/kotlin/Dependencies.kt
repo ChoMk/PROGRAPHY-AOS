@@ -1,4 +1,3 @@
-
 /**
  * @author MyeongKi
  */
@@ -18,7 +17,7 @@ object Dependencies {
         object Compose {
             private const val COMPOSE = "1.5.4"
             const val COMPOSE_COMPILER = "1.5.4"
-
+            private const val COMPOSE_PAGING = "3.3.0-alpha02"
             const val foundation = "androidx.compose.foundation:foundation:${COMPOSE}"
             const val runtime = "androidx.compose.runtime:runtime:${COMPOSE}"
             const val ui = "androidx.compose.ui:ui:${COMPOSE}"
@@ -28,8 +27,9 @@ object Dependencies {
             const val animation = "androidx.compose.animation:animation:${COMPOSE}"
             const val tooling = "androidx.compose.ui:ui-tooling:${COMPOSE}"
             const val toolingPreview = "androidx.compose.ui:ui-tooling-preview:${COMPOSE}"
-
+            const val paging = "androidx.paging:paging-compose:${COMPOSE_PAGING}"
         }
+
         const val androidCore = "androidx.core:core-ktx:${ANDROID_CORE}"
         const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${LIFECYCLE}"
     }
@@ -55,7 +55,7 @@ object Dependencies {
 
         object Ktor {
             private val VERSION get() = "2.3.6"
-            val ktor_clien_core get () = "io.ktor:ktor-client-core:$VERSION"
+            val ktor_clien_core get() = "io.ktor:ktor-client-core:$VERSION"
             val ktor_client_okhttp get() = "io.ktor:ktor-client-okhttp:$VERSION"
             val ktor_client_logging get() = "io.ktor:ktor-client-logging:$VERSION"
             val ktor_client_serialization get() = "io.ktor:ktor-serialization-kotlinx-json:$VERSION"
