@@ -11,7 +11,6 @@ import model.Photo
  */
 class PhotoRepositoryImpl(
     private val remoteSource: PhotoDataSource,
-    private val localSource: PhotoDataSource
 ) : PhotoRepository {
 
     override fun loadPhotos(): Flow<PagingData<Photo>> {

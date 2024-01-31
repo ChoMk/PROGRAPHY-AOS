@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-android")
-
 }
 
 android {
@@ -45,6 +44,9 @@ android {
 
 dependencies {
     implementation(project(":feature:holder"))
+    implementation(project(":feature:photos"))
+    implementation(project(":core:network"))
+    implementation(project(":core:domain"))
 
     implementation(Dependencies.Android.androidCore)
     implementation(Dependencies.Android.lifecycle)
@@ -55,4 +57,6 @@ dependencies {
     implementation(Dependencies.Android.Compose.ui)
     implementation(Dependencies.Android.Compose.material)
     implementation(Dependencies.Android.Compose.toolingPreview)
+    implementation(Dependencies.JetBrains.Ktor.ktor_clien_core)
+
 }

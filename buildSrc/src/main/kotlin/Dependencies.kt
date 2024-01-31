@@ -43,7 +43,7 @@ object Dependencies {
         object Kotlin {
             private const val COLLECTIONS_IMMUTABLE_VERSION = "0.3.5"
             private const val SERIALIZATION_VERSION = "1.6.0"
-
+            const val KOTLIN_VERSION = "1.9.20"
             const val collectionsImmutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:$COLLECTIONS_IMMUTABLE_VERSION"
             const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:$SERIALIZATION_VERSION"
         }

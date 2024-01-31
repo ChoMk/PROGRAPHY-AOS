@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridItemScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,9 +81,7 @@ fun PhotosView(
         photosPagingItems.apply {
             when {
                 loadState.refresh is LoadState.Loading -> {
-                    item {
-                        PhotosSkeletonView()
-                    }
+                    (this@LazyVerticalStaggeredGrid).photoSkeleton()
                 }
 
                 loadState.append is LoadState.Loading -> {
@@ -105,36 +102,28 @@ fun GridPhotoItem(
     Text(text = photo.description)
 }
 
-@Composable
-fun PhotosSkeletonView() {
-    LazyVerticalStaggeredGrid(
-        modifier = Modifier.padding(10.dp),
-        columns = StaggeredGridCells.FixedSize(166.dp),
-        verticalItemSpacing = 10.dp,
-        horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally)
-    ) {
-        repeat(8) {
-            item {
-                PhotoSkeletonItem(
-                    height = when (it % 4) {
-                        0 -> {
-                            172.dp
-                        }
-
-                        1 -> {
-                            246.dp
-                        }
-
-                        2 -> {
-                            200.dp
-                        }
-
-                        else -> {
-                            185.dp
-                        }
+fun LazyStaggeredGridScope.photoSkeleton() {
+    repeat(8) {
+        item {
+            PhotoSkeletonItem(
+                height = when (it % 4) {
+                    0 -> {
+                        172.dp
                     }
-                )
-            }
+
+                    1 -> {
+                        246.dp
+                    }
+
+                    2 -> {
+                        200.dp
+                    }
+
+                    else -> {
+                        185.dp
+                    }
+                }
+            )
         }
     }
 }
@@ -167,10 +156,4 @@ fun AppendLoading() {
     ) {
         DefaultIndicator(modifier = Modifier.align(Alignment.Center))
     }
-}
-
-@Preview
-@Composable
-fun PhotosSkeletonPreview() {
-    PhotosSkeletonView()
 }
