@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation(Dependencies.Android.Compose.viewModel)
+    implementation(Dependencies.Android.Compose.navigation)
 }
