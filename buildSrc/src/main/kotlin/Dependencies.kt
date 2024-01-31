@@ -18,6 +18,7 @@ object Dependencies {
             private const val COMPOSE = "1.5.4"
             const val COMPOSE_COMPILER = "1.5.4"
             private const val COMPOSE_PAGING = "3.3.0-alpha02"
+            private const val COMPOSE_NAVIGATION = "2.7.6"
             const val foundation = "androidx.compose.foundation:foundation:${COMPOSE}"
             const val runtime = "androidx.compose.runtime:runtime:${COMPOSE}"
             const val ui = "androidx.compose.ui:ui:${COMPOSE}"
@@ -28,6 +29,7 @@ object Dependencies {
             const val tooling = "androidx.compose.ui:ui-tooling:${COMPOSE}"
             const val toolingPreview = "androidx.compose.ui:ui-tooling-preview:${COMPOSE}"
             const val paging = "androidx.paging:paging-compose:${COMPOSE_PAGING}"
+            const val navigation = "androidx.navigation:navigation-compose:${COMPOSE_NAVIGATION}"
         }
 
         const val androidCore = "androidx.core:core-ktx:${ANDROID_CORE}"
