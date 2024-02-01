@@ -5,4 +5,5 @@ plugins {
 
 dependencies {
     implementation(Dependencies.Android.Compose.navigation)
+    implementation(project(":core:ui"))
 }

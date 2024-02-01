@@ -5,5 +5,5 @@ package com.myeong.prography.holder.sheet
  */
 sealed interface HolderSheetType {
     data object None : HolderSheetType
-    data object Detail : HolderSheetType
+    data class Detail(val photoId: String) : HolderSheetType
 }

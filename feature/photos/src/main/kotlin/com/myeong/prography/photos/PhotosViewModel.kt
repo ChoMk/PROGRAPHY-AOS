@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.myeong.prography.photos.PhotosIntent.Companion.toEvent
+import com.myeong.prography.ui.event.SheetEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,7 +23,7 @@ import usecase.LoadPhotosUseCase
  * Created by MyeongKi.
  */
 class PhotosViewModel(
-    showDetailSheet: suspend (photoId: String) -> Unit,
+    visibleSheetFlow: MutableSharedFlow<SheetEvent>,
     loadPhotosUseCase: LoadPhotosUseCase
 ) : ViewModel() {
     val photosPagingFlow: Flow<PagingData<Photo>> = loadPhotosUseCase().distinctUntilChanged().cachedIn(viewModelScope)
@@ -45,7 +46,7 @@ class PhotosViewModel(
     private val showDetailSheetFlow = actionFlow
         .filterIsInstance<PhotosEvent.ShowDetailSheet>()
         .onEach {
-            showDetailSheet(it.photoId)
+            visibleSheetFlow.emit(SheetEvent.ShowDetailSheet(it.photoId))
         }
     private val notifyOutsideFlow = merge(
         showDetailSheetFlow
@@ -57,13 +58,13 @@ class PhotosViewModel(
 
     companion object {
         fun provideFactory(
-            showDetailSheet: suspend (photoId: String) -> Unit,
+            visibleSheetFlow: MutableSharedFlow<SheetEvent>,
             loadPhotosUseCase: LoadPhotosUseCase,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return PhotosViewModel(
-                    showDetailSheet,
+                    visibleSheetFlow,
                     loadPhotosUseCase
                 ) as T
             }

@@ -1,6 +1,6 @@
 package com.myeong.prography.photos
 
-import DefaultIndicator
+import com.myeong.prography.ui.DefaultIndicator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
@@ -150,6 +151,7 @@ fun GridPhotoItem(
                 .align(Alignment.BottomStart),
             text = photo.description,
             maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Medium,
             color = colorResource(id = R.color.desc_color)
         )

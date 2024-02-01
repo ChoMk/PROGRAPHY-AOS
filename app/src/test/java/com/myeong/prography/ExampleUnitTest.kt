@@ -1,4 +1,4 @@
-package com.myeong.prography_aos
+package com.myeong.prography
 
 import org.junit.Test
 

@@ -1,3 +1,5 @@
+package com.myeong.prography.ui
+
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable

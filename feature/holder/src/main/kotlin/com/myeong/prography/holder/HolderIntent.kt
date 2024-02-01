@@ -24,5 +24,5 @@ sealed interface HolderIntent {
 sealed interface HolderEvent {
     data class NavigateComponent(val component: HolderComponent) : HolderEvent
     data object HideSheet : HolderEvent
-    data object ShowDetailSheet : HolderEvent
+    data class ShowDetailSheet(val photoId: String) : HolderEvent
 }

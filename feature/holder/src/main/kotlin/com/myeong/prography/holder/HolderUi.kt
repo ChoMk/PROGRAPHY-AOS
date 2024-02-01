@@ -30,7 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.myeong.prography.holder.sheet.HolderSheetType
-import com.myeong.prography.holder.sheet.SheetEvent
+import com.myeong.prography.ui.event.SheetEvent
 import com.myeong.prography_aos.R
 import kotlinx.coroutines.flow.Flow
 
@@ -42,7 +42,7 @@ fun HolderRoute(
     visibleSheetFlow: Flow<SheetEvent>,
     photosContent: @Composable () -> Unit,
     randomContent: @Composable () -> Unit,
-    detailSheet: @Composable () -> Unit,
+    detailSheet: @Composable (photoId: String) -> Unit,
 ) {
     val viewModel: HolderViewModel = viewModel(
         factory = HolderViewModel.provideFactory(visibleSheetFlow)
@@ -76,12 +76,12 @@ fun HolderRoute(
 @Composable
 fun SheetScreen(
     holderSheetType: HolderSheetType,
-    detailSheet: @Composable () -> Unit
+    detailSheet: @Composable (photoId: String) -> Unit,
 ) {
     when (holderSheetType) {
         is HolderSheetType.None -> Unit
         is HolderSheetType.Detail -> {
-            detailSheet()
+            detailSheet(holderSheetType.photoId)
         }
     }
 }

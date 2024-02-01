@@ -11,6 +11,7 @@ data class Photo(
     val imageHeight: Int,
     val title: String,
     val description: String,
+    val tags: List<String>
 )
 
 data class PhotoImageUrl(

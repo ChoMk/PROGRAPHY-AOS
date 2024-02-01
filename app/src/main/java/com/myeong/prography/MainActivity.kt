@@ -1,17 +1,13 @@
-package com.myeong.prography_aos
+package com.myeong.prography
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.myeong.prography.detail.DetailRoute
+import com.myeong.prography.detail.DetailViewModel
 import com.myeong.prography.holder.HolderRoute
-import com.myeong.prography.holder.sheet.SheetEvent
 import com.myeong.prography.photos.PhotosScreenRoute
 import com.myeong.prography.photos.PhotosViewModel
 
@@ -24,11 +20,7 @@ class MainActivity : ComponentActivity() {
                 photosContent = {
                     val viewModel: PhotosViewModel = viewModel(
                         factory = PhotosViewModel.provideFactory(
-                            showDetailSheet = { photoId ->
-                                AppContainer.visibleSheetFlow.emit(
-                                    SheetEvent.ShowDetailSheet
-                                )
-                            },
+                            visibleSheetFlow = AppContainer.visibleSheetFlow,
                             loadPhotosUseCase = AppContainer.loadPhotosUseCase
                         )
                     )
@@ -37,12 +29,14 @@ class MainActivity : ComponentActivity() {
                 randomContent = {
                     Text(text = "random page")
                 },
-                detailSheet = {
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black)
+                detailSheet = { photoId ->
+                    val viewModel: DetailViewModel = viewModel(
+                        factory = DetailViewModel.provideFactory(
+                            visibleSheetFlow = AppContainer.visibleSheetFlow,
+                            loadPhotoDetailUseCase = AppContainer.loadPhotoDetailUseCase,
+                        )
                     )
+                    DetailRoute(viewModel, photoId)
                 }
             )
         }

@@ -22,9 +22,7 @@ class PhotoHttpClient(private val httpClient: HttpClient) {
     }
 
     suspend fun requestPhoto(photoId: String): PhotoResponse {
-        return httpClient.get("$HOST/photos") {
-            parameter("id", photoId)
-        }.body()
+        return httpClient.get("$HOST/photos/${photoId}").body()
     }
 
     companion object {
@@ -43,6 +41,7 @@ fun PhotoResponse.toPhoto(): Photo {
             small = urls.small
         ),
         description = description,
-        title = user.name
+        title = user.name,
+        tags = tags.map { it.title }
     )
 }

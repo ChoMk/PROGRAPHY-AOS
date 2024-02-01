@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.myeong.prography.holder.HolderIntent.Companion.toEvent
 import com.myeong.prography.holder.sheet.HolderSheetType
-import com.myeong.prography.holder.sheet.SheetEvent
+import com.myeong.prography.ui.event.SheetEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -59,7 +59,7 @@ class HolderViewModel(
         .filterIsInstance<HolderEvent.ShowDetailSheet>()
         .map {
             uiState.value.copy(
-                holderSheetType = HolderSheetType.Detail
+                holderSheetType = HolderSheetType.Detail(it.photoId)
             )
         }
     val uiState: StateFlow<HolderUiState> = merge(
@@ -83,7 +83,7 @@ class HolderViewModel(
             }
 
             is SheetEvent.ShowDetailSheet -> {
-                HolderEvent.ShowDetailSheet
+                HolderEvent.ShowDetailSheet(this.photoId)
             }
         }
     }
