@@ -4,8 +4,8 @@ import DefaultIndicator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -45,26 +45,7 @@ import model.Photo
 @Composable
 fun PhotosScreenRoute(viewModel: PhotosViewModel) {
     val pagingFlow = remember { viewModel.photosPagingFlow }
-    PhotosScreen(photosPagingFlow = pagingFlow)
-}
-
-@Composable
-fun PhotosScreen(
-    photosPagingFlow: Flow<PagingData<Photo>>
-) {
-    Column {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(horizontal = 20.dp, vertical = 10.dp),
-            text = "최신 이미지",
-            fontSize = 20.sp,
-            color = colorResource(id = R.color.title_color),
-            fontWeight = FontWeight.Bold
-        )
-        PhotosView(photosPagingFlow)
-    }
+    PhotosView(photosPagingFlow = pagingFlow)
 }
 
 @Composable
@@ -72,46 +53,59 @@ fun PhotosView(
     photosPagingFlow: Flow<PagingData<Photo>>
 ) {
     val photosPagingItems: LazyPagingItems<Photo> = photosPagingFlow.collectAsLazyPagingItems()
-    val listState = rememberLazyStaggeredGridState()
-    val appendLoading = remember {
-        mutableStateOf(false)
-    }
-    Box {
-        LazyVerticalStaggeredGrid(
-            state = listState,
-            modifier = Modifier.padding(10.dp),
-            columns = StaggeredGridCells.FixedSize(166.dp),
-            verticalItemSpacing = 10.dp,
-            horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally)
-        ) {
-            items(photosPagingItems.itemCount) { index ->
-                photosPagingItems[index]?.let { photo ->
-                    GridPhotoItem(photo)
-                }
-            }
-            photosPagingItems.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        (this@LazyVerticalStaggeredGrid).photoSkeleton()
-                    }
+    val appendLoading = remember { mutableStateOf(false) }
 
-                    loadState.append is LoadState.Loading -> {
-                        appendLoading.value = true
-                    }
-
-                    loadState.append is LoadState.NotLoading -> {
-                        appendLoading.value = false
-                    }
-                }
+    LazyVerticalStaggeredGrid(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxHeight(),
+        columns = StaggeredGridCells.FixedSize(166.dp),
+        verticalItemSpacing = 10.dp,
+        horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally)
+    ) {
+        item(span = StaggeredGridItemSpan.FullLine) {
+            PhotosListTitle(title = "최신 이미지")
+        }
+        items(photosPagingItems.itemCount) { index ->
+            photosPagingItems[index]?.let { photo ->
+                GridPhotoItem(photo)
             }
         }
         if (appendLoading.value) {
-            AppendLoading(modifier = Modifier.align(Alignment.BottomCenter))
+            item {
+                AppendLoading(modifier = Modifier)
+            }
+        }
+        photosPagingItems.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    (this@LazyVerticalStaggeredGrid).photoSkeleton()
+                }
+
+                loadState.append is LoadState.Loading -> {
+                    appendLoading.value = true
+                }
+
+                loadState.append is LoadState.NotLoading -> {
+                    appendLoading.value = false
+                }
+            }
         }
     }
-
 }
-
+@Composable
+fun PhotosListTitle(title:String){
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 10.dp),
+        text = title,
+        fontSize = 20.sp,
+        color = colorResource(id = R.color.title_color),
+        fontWeight = FontWeight.Bold
+    )
+}
 @Composable
 fun GridPhotoItem(
     photo: Photo
