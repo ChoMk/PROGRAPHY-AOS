@@ -9,4 +9,5 @@ import model.Photo
  */
 interface PhotoRepository {
     fun loadPhotos(): Flow<PagingData<Photo>>
+    fun loadPhoto(photoId: String): Flow<Photo>
 }

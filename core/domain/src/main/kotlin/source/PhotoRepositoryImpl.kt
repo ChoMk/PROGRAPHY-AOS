@@ -21,4 +21,8 @@ class PhotoRepositoryImpl(
             }
         ).flow
     }
+
+    override fun loadPhoto(photoId: String): Flow<Photo> {
+        return remoteSource.loadPhoto(photoId)
+    }
 }

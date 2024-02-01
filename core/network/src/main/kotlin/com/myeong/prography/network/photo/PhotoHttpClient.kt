@@ -6,20 +6,43 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.request.post
+import model.Photo
+import model.PhotoImageUrl
 import source.request.LoadPhotosOption
 
 /**
  * Created by MyeongKi.
  */
 class PhotoHttpClient(private val httpClient: HttpClient) {
-    suspend fun requestPhotos(requestOption: LoadPhotosOption):List<PhotoResponse> {
+    suspend fun requestPhotos(requestOption: LoadPhotosOption): List<PhotoResponse> {
         return httpClient.get("$HOST/photos") {
             parameter("page", requestOption.page)
             parameter("per_page", requestOption.pageSize)
         }.body()
     }
+
+    suspend fun requestPhoto(photoId: String): PhotoResponse {
+        return httpClient.get("$HOST/photos") {
+            parameter("id", photoId)
+        }.body()
+    }
+
     companion object {
         private const val HOST = UNSPLASH_HOST
     }
+}
+
+fun PhotoResponse.toPhoto(): Photo {
+    return Photo(
+        id = id,
+        userName = user.username,
+        imageHeight = height,
+        imageWidth = width,
+        imageUrl = PhotoImageUrl(
+            full = urls.full,
+            small = urls.small
+        ),
+        description = description,
+        title = user.name
+    )
 }

@@ -9,4 +9,6 @@ import source.request.LoadPhotosOption
  */
 interface PhotoDataSource {
     fun loadPhotos(requestOption: LoadPhotosOption): Flow<List<Photo>>
+
+    fun loadPhoto(photoId: String): Flow<Photo>
 }
