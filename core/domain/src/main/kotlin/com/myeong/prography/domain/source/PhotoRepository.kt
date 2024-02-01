@@ -14,6 +14,5 @@ interface PhotoRepository {
     fun deletePhotoBookmark(photoId: String): Flow<String>
     fun loadPhotoBookmarks(): Flow<List<Photo>>
     fun loadPhotoBookmark(photoId: String): Flow<Photo?>
-
     fun loadRandomPhotos(): Flow<List<Photo>>
 }

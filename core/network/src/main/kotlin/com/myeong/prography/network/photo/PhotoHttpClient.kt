@@ -25,7 +25,9 @@ class PhotoHttpClient(private val httpClient: HttpClient) {
         return httpClient.get("$HOST/photos/${photoId}").body()
     }
     suspend fun requestRandomPhotos(): List<PhotoResponse> {
-        return httpClient.get("$HOST/photos/random").body()
+        return httpClient.get("$HOST/photos/random") {
+            parameter("count", 20)
+        }.body()
     }
 
     companion object {

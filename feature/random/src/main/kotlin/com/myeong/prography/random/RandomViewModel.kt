@@ -83,10 +83,9 @@ class RandomViewModel(
             addBookmark(it)
         }
         .onEach {
-            if (viewModelState.randomPhotos.size < 3) {
-                eventInvoker(RandomEvent.LoadRandomPhotos)
-            }
+            eventInvoker(RandomEvent.PopPhoto)
         }
+
     val uiState = merge(
         loadRandomPhotosFlow,
         popPhotoFlow
