@@ -58,6 +58,10 @@ class PhotoLocalDataSource(driver: SqlDriver) : PhotoDataSource {
         }
     }
 
+    override fun loadRandomPhotos(): Flow<List<Photo>> {
+        throw UnsupportedOperationException("미지원")
+    }
+
     private fun PhotoEntity.toPhoto():Photo{
         return Photo(
             id = id,

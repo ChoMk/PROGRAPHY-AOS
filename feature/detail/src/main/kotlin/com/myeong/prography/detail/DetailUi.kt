@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
-import com.myeong.prograph.R
+import com.myeong.prography.ui.R
 import com.myeong.prography.ui.DefaultIndicator
 import kotlinx.collections.immutable.ImmutableList
 

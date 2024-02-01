@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.myeong.prograph.R
+import com.myeong.prography.ui.R
 import com.myeong.prography.holder.sheet.HolderSheetType
 import com.myeong.prography.ui.event.SheetEvent
 import kotlinx.coroutines.flow.Flow

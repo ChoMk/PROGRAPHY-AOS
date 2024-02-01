@@ -6,7 +6,7 @@ plugins {
 
 android {
     compileSdk = Dependencies.Android.COMPILE_SDK
-    namespace = "com.myeong.prograph"
+    namespace = "com.myeong.prography"
     defaultConfig {
         minSdk = Dependencies.Android.MIN_SDK
     }

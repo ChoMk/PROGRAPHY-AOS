@@ -24,6 +24,9 @@ class PhotoHttpClient(private val httpClient: HttpClient) {
     suspend fun requestPhoto(photoId: String): PhotoResponse {
         return httpClient.get("$HOST/photos/${photoId}").body()
     }
+    suspend fun requestRandomPhotos(): List<PhotoResponse> {
+        return httpClient.get("$HOST/photos/random").body()
+    }
 
     companion object {
         private const val HOST = UNSPLASH_HOST

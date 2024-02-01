@@ -3,13 +3,14 @@ package com.myeong.prography
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.Text
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.myeong.prography.detail.DetailRoute
 import com.myeong.prography.detail.DetailViewModel
 import com.myeong.prography.holder.HolderRoute
 import com.myeong.prography.photos.PhotosScreenRoute
 import com.myeong.prography.photos.PhotosViewModel
+import com.myeong.prography.random.RandomRoute
+import com.myeong.prography.random.RandomViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +30,15 @@ class MainActivity : ComponentActivity() {
                     PhotosScreenRoute(viewModel = viewModel)
                 },
                 randomContent = {
-                    Text(text = "random page")
+                    val viewModel: RandomViewModel = viewModel(
+                        factory = RandomViewModel.provideFactory(
+                            refreshBookmarkItemFlow = AppContainer.refreshBookmarkItemFlow,
+                            visibleSheetFlow = AppContainer.visibleSheetFlow,
+                            addPhotoBookmarkUseCase = AppContainer.addPhotoBookmarkUseCase,
+                            loadRandomPhotosUseCase = AppContainer.loadRandomPhotosUseCase
+                        )
+                    )
+                    RandomRoute(viewModel = viewModel)
                 },
                 detailSheet = { photoId ->
                     val viewModel: DetailViewModel = viewModel(

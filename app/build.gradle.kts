@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature:holder"))
     implementation(project(":feature:photos"))
     implementation(project(":feature:detail"))
+    implementation(project(":feature:random"))
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))

@@ -40,7 +40,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
-import com.myeong.prograph.R
+import com.myeong.prography.ui.R
 import com.myeong.prography.domain.model.Photo
 import com.myeong.prography.ui.DefaultIndicator
 import kotlinx.coroutines.flow.Flow
