@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.myeong.prography.detail.DetailIntent.Companion.toEvent
 import com.myeong.prography.domain.ResultData
 import com.myeong.prography.domain.asResult
+import com.myeong.prography.domain.event.RefreshBookmarkEvent
 import com.myeong.prography.domain.model.Photo
 import com.myeong.prography.domain.usecase.AddPhotoBookmarkUseCase
 import com.myeong.prography.domain.usecase.DeletePhotoBookmarkUseCase
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
  * Created by MyeongKi.
  */
 class DetailViewModel(
+    refreshBookmarkItemFlow: MutableSharedFlow<RefreshBookmarkEvent>,
     visibleSheetFlow: MutableSharedFlow<SheetEvent>,
     loadPhotoDetailUseCase: LoadPhotoDetailUseCase,
     addPhotoBookmarkUseCase: AddPhotoBookmarkUseCase,
@@ -71,6 +73,7 @@ class DetailViewModel(
                 }
 
                 is ResultData.Success -> {
+                    refreshBookmarkItemFlow.emit(RefreshBookmarkEvent.AddBookmark(it.data))
                     viewModelState.copy(
                         photo = viewModelState.photo?.copy(
                             isBookmark = true
@@ -78,9 +81,6 @@ class DetailViewModel(
                     )
                 }
             }
-        }
-        .onEach {
-            //notify outside
         }
     private val deleteBookmarkFlow = actionFlow
         .filterIsInstance<DetailEvent.Bookmark>()
@@ -95,6 +95,7 @@ class DetailViewModel(
                 }
 
                 is ResultData.Success -> {
+                    refreshBookmarkItemFlow.emit(RefreshBookmarkEvent.DeleteBookmark(it.data))
                     viewModelState.copy(
                         photo = viewModelState.photo?.copy(
                             isBookmark = false
@@ -168,6 +169,7 @@ class DetailViewModel(
 
     companion object {
         fun provideFactory(
+            refreshBookmarkItemFlow: MutableSharedFlow<RefreshBookmarkEvent>,
             visibleSheetFlow: MutableSharedFlow<SheetEvent>,
             loadPhotoDetailUseCase: LoadPhotoDetailUseCase,
             addPhotoBookmarkUseCase: AddPhotoBookmarkUseCase,
@@ -176,6 +178,7 @@ class DetailViewModel(
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return DetailViewModel(
+                    refreshBookmarkItemFlow,
                     visibleSheetFlow,
                     loadPhotoDetailUseCase,
                     addPhotoBookmarkUseCase,

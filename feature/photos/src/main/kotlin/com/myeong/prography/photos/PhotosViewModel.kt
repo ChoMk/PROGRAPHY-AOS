@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.myeong.prography.domain.ResultData
 import com.myeong.prography.domain.asResult
+import com.myeong.prography.domain.event.RefreshBookmarkEvent
 import com.myeong.prography.domain.model.Photo
 import com.myeong.prography.domain.usecase.LoadPhotoBookmarksUseCase
 import com.myeong.prography.domain.usecase.LoadPhotosUseCase
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
  * Created by MyeongKi.
  */
 class PhotosViewModel(
+    refreshBookmarkItemFlow: Flow<RefreshBookmarkEvent>,
     visibleSheetFlow: MutableSharedFlow<SheetEvent>,
     loadPhotosUseCase: LoadPhotosUseCase,
     loadPhotoBookmarkUseCase: LoadPhotoBookmarksUseCase
@@ -51,7 +53,19 @@ class PhotosViewModel(
     }
     private val actionFlow = merge(
         eventFlow,
-        intentFlow.map { it.toEvent() }
+        intentFlow.map { it.toEvent() },
+        refreshBookmarkItemFlow.map {
+            when (it) {
+                is RefreshBookmarkEvent.DeleteBookmark -> {
+                    PhotosEvent.DeleteBookmarkItem(it.photoId)
+                }
+
+                is RefreshBookmarkEvent.AddBookmark -> {
+                    PhotosEvent.AddBookmarkItem(it.photo)
+
+                }
+            }
+        }
     )
     private val showDetailSheetFlow = actionFlow
         .filterIsInstance<PhotosEvent.ShowDetailSheet>()
@@ -75,8 +89,24 @@ class PhotosViewModel(
                 }
             }
         }
+    private val addBookmarkItemFlow = actionFlow
+        .filterIsInstance<PhotosEvent.AddBookmarkItem>()
+        .map {
+            viewModelState.bookmarks.add(0, it.photo)
+            viewModelState
+        }
+    private val deleteBookmarkItemFlow = actionFlow
+        .filterIsInstance<PhotosEvent.DeleteBookmarkItem>()
+        .map {event->
+            val photoDeleted = viewModelState.bookmarks.find { it.id == event.photoId }
+            viewModelState.bookmarks.remove(photoDeleted)
+            viewModelState
+
+        }
     val uiState = merge(
-        loadPhotoBookmarkFlow
+        loadPhotoBookmarkFlow,
+        addBookmarkItemFlow,
+        deleteBookmarkItemFlow
     )
         .map { it.toUiState() }
         .stateIn(
@@ -101,6 +131,7 @@ class PhotosViewModel(
 
     companion object {
         fun provideFactory(
+            refreshBookmarkItemFlow: Flow<RefreshBookmarkEvent>,
             visibleSheetFlow: MutableSharedFlow<SheetEvent>,
             loadPhotosUseCase: LoadPhotosUseCase,
             loadPhotoBookmarkUseCase: LoadPhotoBookmarksUseCase
@@ -109,6 +140,7 @@ class PhotosViewModel(
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return PhotosViewModel(
+                    refreshBookmarkItemFlow,
                     visibleSheetFlow,
                     loadPhotosUseCase,
                     loadPhotoBookmarkUseCase

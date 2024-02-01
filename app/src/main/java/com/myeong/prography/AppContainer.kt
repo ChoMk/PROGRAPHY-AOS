@@ -2,6 +2,7 @@ package com.myeong.prography
 
 import com.myeong.prography.database.PhotoLocalDataSource
 import com.myeong.prography.database.provideDatabaseDriver
+import com.myeong.prography.domain.event.RefreshBookmarkEvent
 import com.myeong.prography.domain.source.PhotoRepositoryImpl
 import com.myeong.prography.domain.usecase.AddPhotoBookmarkUseCase
 import com.myeong.prography.domain.usecase.DeletePhotoBookmarkUseCase
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  */
 object AppContainer {
     val visibleSheetFlow = MutableSharedFlow<SheetEvent>()
+    val refreshBookmarkItemFlow = MutableSharedFlow<RefreshBookmarkEvent>()
+
     private val photoRepository by lazy {
         PhotoRepositoryImpl(
             remoteSource = PhotoRemoteDataSource(

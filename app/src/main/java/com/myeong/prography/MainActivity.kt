@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
                 photosContent = {
                     val viewModel: PhotosViewModel = viewModel(
                         factory = PhotosViewModel.provideFactory(
+                            refreshBookmarkItemFlow = AppContainer.refreshBookmarkItemFlow,
                             visibleSheetFlow = AppContainer.visibleSheetFlow,
                             loadPhotosUseCase = AppContainer.loadPhotosUseCase,
                             loadPhotoBookmarkUseCase = AppContainer.loadPhotoBookmarksUseCase
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
                 detailSheet = { photoId ->
                     val viewModel: DetailViewModel = viewModel(
                         factory = DetailViewModel.provideFactory(
+                            refreshBookmarkItemFlow = AppContainer.refreshBookmarkItemFlow,
                             visibleSheetFlow = AppContainer.visibleSheetFlow,
                             loadPhotoDetailUseCase = AppContainer.loadPhotoDetailUseCase,
                             addPhotoBookmarkUseCase = AppContainer.addPhotoBookmarkUseCase,
