@@ -20,6 +20,7 @@ class RemotePhotoDataSource(
             emit(
                 result.map {
                     Photo(
+                        id = it.id,
                         userName = it.user.username,
                         imageHeight = it.height,
                         imageWidth = it.width,

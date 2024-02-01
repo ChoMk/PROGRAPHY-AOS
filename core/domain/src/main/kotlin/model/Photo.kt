@@ -4,6 +4,7 @@ package model
  * Created by MyeongKi.
  */
 data class Photo(
+    val id: String,
     val userName: String,
     val imageUrl: PhotoImageUrl,
     val imageWidth: Int,

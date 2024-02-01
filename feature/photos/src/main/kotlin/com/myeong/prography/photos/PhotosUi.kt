@@ -66,7 +66,9 @@ fun PhotosView(
         item(span = StaggeredGridItemSpan.FullLine) {
             PhotosListTitle(title = "최신 이미지")
         }
-        items(photosPagingItems.itemCount) { index ->
+        items(photosPagingItems.itemCount, key = { index ->
+            photosPagingItems[index]?.id ?: -1
+        }) { index ->
             photosPagingItems[index]?.let { photo ->
                 GridPhotoItem(photo)
             }
@@ -93,8 +95,9 @@ fun PhotosView(
         }
     }
 }
+
 @Composable
-fun PhotosListTitle(title:String){
+fun PhotosListTitle(title: String) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,6 +109,7 @@ fun PhotosListTitle(title:String){
         fontWeight = FontWeight.Bold
     )
 }
+
 @Composable
 fun GridPhotoItem(
     photo: Photo

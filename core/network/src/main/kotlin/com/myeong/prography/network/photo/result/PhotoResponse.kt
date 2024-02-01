@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class PhotoResponse(
+    val id: String = "",
     val user: UserResponse = UserResponse(),
     val width: Int = 0,
     val height: Int = 0,
