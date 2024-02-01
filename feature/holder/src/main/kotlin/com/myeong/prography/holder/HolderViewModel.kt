@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.myeong.prography.holder.HolderIntent.Companion.toEvent
 import com.myeong.prography.holder.sheet.HolderSheetType
-import com.myeong.prography.holder.sheet.VisibleSheetEvent
+import com.myeong.prography.holder.sheet.SheetEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
  * Created by MyeongKi.
  */
 class HolderViewModel(
-    visibleSheetFlow: Flow<VisibleSheetEvent>
+    visibleSheetFlow: Flow<SheetEvent>
 ) : ViewModel() {
     private val intentFlow = MutableSharedFlow<HolderIntent>()
     val intentInvoker: (HolderIntent) -> Unit = {
@@ -37,7 +37,8 @@ class HolderViewModel(
     }
     private val actionFlow = merge(
         eventFlow,
-        intentFlow.map { it.toEvent() }
+        intentFlow.map { it.toEvent() },
+        visibleSheetFlow.map { it.toEvent() }
     )
     private val navigateComponentFlow = actionFlow
         .filterIsInstance<HolderEvent.NavigateComponent>()
@@ -47,26 +48,24 @@ class HolderViewModel(
                 selectedComponent = it.component
             )
         }
-    private val actionSheetFlow = visibleSheetFlow
+    private val hideSheetFlow = actionFlow
+        .filterIsInstance<HolderEvent.HideSheet>()
         .map {
-            when (it) {
-                is VisibleSheetEvent.HideSheet -> {
-                    uiState.value.copy(
-                        holderSheetType = HolderSheetType.None
-                    )
-                }
-
-                is VisibleSheetEvent.ShowDetailSheet -> {
-                    uiState.value.copy(
-                        holderSheetType = HolderSheetType.Detail
-                    )
-                }
-            }
-
+            uiState.value.copy(
+                holderSheetType = HolderSheetType.None
+            )
+        }
+    private val showDetailSheetFlow = actionFlow
+        .filterIsInstance<HolderEvent.ShowDetailSheet>()
+        .map {
+            uiState.value.copy(
+                holderSheetType = HolderSheetType.Detail
+            )
         }
     val uiState: StateFlow<HolderUiState> = merge(
         navigateComponentFlow,
-        actionSheetFlow
+        hideSheetFlow,
+        showDetailSheetFlow
     )
         .stateIn(
             viewModelScope,
@@ -77,9 +76,21 @@ class HolderViewModel(
             )
         )
 
+    private fun SheetEvent.toEvent(): HolderEvent {
+        return when (this) {
+            is SheetEvent.HideSheet -> {
+                HolderEvent.HideSheet
+            }
+
+            is SheetEvent.ShowDetailSheet -> {
+                HolderEvent.ShowDetailSheet
+            }
+        }
+    }
+
     companion object {
         fun provideFactory(
-            visibleSheetFlow: Flow<VisibleSheetEvent>
+            visibleSheetFlow: Flow<SheetEvent>
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {

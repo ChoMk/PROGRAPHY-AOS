@@ -2,6 +2,7 @@ package com.myeong.prography.photos
 
 import DefaultIndicator
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -45,12 +46,19 @@ import model.Photo
 @Composable
 fun PhotosScreenRoute(viewModel: PhotosViewModel) {
     val pagingFlow = remember { viewModel.photosPagingFlow }
-    PhotosView(photosPagingFlow = pagingFlow)
+    val intentInvoker = remember {
+        viewModel.intentInvoker
+    }
+    PhotosView(
+        photosPagingFlow = pagingFlow,
+        intentInvoker = intentInvoker
+    )
 }
 
 @Composable
 fun PhotosView(
-    photosPagingFlow: Flow<PagingData<Photo>>
+    photosPagingFlow: Flow<PagingData<Photo>>,
+    intentInvoker: (PhotosIntent) -> Unit
 ) {
     val photosPagingItems: LazyPagingItems<Photo> = photosPagingFlow.collectAsLazyPagingItems()
     val appendLoading = remember { mutableStateOf(false) }
@@ -70,7 +78,9 @@ fun PhotosView(
             photosPagingItems[index]?.id ?: -1
         }) { index ->
             photosPagingItems[index]?.let { photo ->
-                GridPhotoItem(photo)
+                GridPhotoItem(photo) {
+                    intentInvoker(PhotosIntent.ClickPhoto(photo))
+                }
             }
         }
         if (appendLoading.value) {
@@ -112,14 +122,17 @@ fun PhotosListTitle(title: String) {
 
 @Composable
 fun GridPhotoItem(
-    photo: Photo
+    photo: Photo,
+    onClickItem: () -> Unit
 ) {
     val aspectRatio = photo.imageWidth.toFloat() / photo.imageHeight.toFloat()
     val imageSizeModifier = Modifier
         .fillMaxWidth()
         .aspectRatio(aspectRatio)
     Box(
-        modifier = imageSizeModifier.clip(RoundedCornerShape(10.dp))
+        modifier = imageSizeModifier
+            .clip(RoundedCornerShape(10.dp))
+            .clickable(onClick = onClickItem)
     ) {
         SubcomposeAsyncImage(
             model = photo.imageUrl.small,

@@ -1,6 +1,6 @@
 package com.myeong.prography_aos
 
-import com.myeong.prography.holder.sheet.VisibleSheetEvent
+import com.myeong.prography.holder.sheet.SheetEvent
 import com.myeong.prography.network.HttpClientFactory
 import com.myeong.prography.network.photo.PhotoHttpClient
 import com.myeong.prography.network.photo.RemotePhotoDataSource
@@ -12,7 +12,7 @@ import usecase.LoadPhotosUseCase
  * Created by MyeongKi.
  */
 object AppContainer {
-    val visibleSheetFlow = MutableSharedFlow<VisibleSheetEvent>()
+    val visibleSheetFlow = MutableSharedFlow<SheetEvent>()
     private val photoRepository by lazy {
         PhotoRepositoryImpl(
             remoteSource = RemotePhotoDataSource(

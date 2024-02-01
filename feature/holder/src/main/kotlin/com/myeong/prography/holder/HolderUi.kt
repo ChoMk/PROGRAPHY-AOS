@@ -1,5 +1,6 @@
 package com.myeong.prography.holder
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.myeong.prography.holder.sheet.HolderSheetType
-import com.myeong.prography.holder.sheet.VisibleSheetEvent
+import com.myeong.prography.holder.sheet.SheetEvent
 import com.myeong.prography_aos.R
 import kotlinx.coroutines.flow.Flow
 
@@ -38,7 +39,7 @@ import kotlinx.coroutines.flow.Flow
  */
 @Composable
 fun HolderRoute(
-    visibleSheetFlow: Flow<VisibleSheetEvent>,
+    visibleSheetFlow: Flow<SheetEvent>,
     photosContent: @Composable () -> Unit,
     randomContent: @Composable () -> Unit,
     detailSheet: @Composable () -> Unit,
@@ -49,6 +50,9 @@ fun HolderRoute(
     val uiState: HolderUiState = viewModel.uiState.collectAsState().value
     val intentInvoker = remember {
         viewModel.intentInvoker
+    }
+    val eventInvoker = remember {
+        viewModel.eventInvoker
     }
     Box {
         HolderScreen(
@@ -62,7 +66,11 @@ fun HolderRoute(
             detailSheet = detailSheet
         )
     }
-
+    BackHandler {
+        if (uiState.holderSheetType != HolderSheetType.None) {
+            eventInvoker(HolderEvent.HideSheet)
+        }
+    }
 }
 
 @Composable
