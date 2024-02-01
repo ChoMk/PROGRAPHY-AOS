@@ -64,4 +64,11 @@ object Dependencies {
             val ktor_client_negotiation get() = "io.ktor:ktor-client-content-negotiation:$VERSION"
         }
     }
+    object Squareup {
+        object SQLDelight {
+            const val VERSION = "2.0.0"
+            const val androidDriver = "app.cash.sqldelight:android-driver:$VERSION"
+            const val sqliteDriver = "app.cash.sqldelight:sqlite-driver:$VERSION"
+        }
+    }
 }

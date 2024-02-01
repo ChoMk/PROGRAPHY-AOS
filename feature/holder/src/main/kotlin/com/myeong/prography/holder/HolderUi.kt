@@ -1,5 +1,6 @@
 package com.myeong.prography.holder
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,31 +26,64 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.myeong.prography_aos.R
+import com.myeong.prograph.R
+import com.myeong.prography.holder.sheet.HolderSheetType
+import com.myeong.prography.ui.event.SheetEvent
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by MyeongKi.
  */
 @Composable
 fun HolderRoute(
+    visibleSheetFlow: Flow<SheetEvent>,
     photosContent: @Composable () -> Unit,
-    randomContent: @Composable () -> Unit
+    randomContent: @Composable () -> Unit,
+    detailSheet: @Composable (photoId: String) -> Unit,
 ) {
-    val viewModel: HolderViewModel = viewModel()
+    val viewModel: HolderViewModel = viewModel(
+        factory = HolderViewModel.provideFactory(visibleSheetFlow)
+    )
     val uiState: HolderUiState = viewModel.uiState.collectAsState().value
     val intentInvoker = remember {
         viewModel.intentInvoker
     }
-    HolderScreen(
-        uiState = uiState,
-        photosContent = photosContent,
-        randomContent = randomContent,
-        intentInvoker = intentInvoker
-    )
+    val eventInvoker = remember {
+        viewModel.eventInvoker
+    }
+    Box {
+        HolderScreen(
+            uiState = uiState,
+            photosContent = photosContent,
+            randomContent = randomContent,
+            intentInvoker = intentInvoker
+        )
+        SheetScreen(
+            holderSheetType = uiState.holderSheetType,
+            detailSheet = detailSheet
+        )
+    }
+    BackHandler {
+        if (uiState.holderSheetType != HolderSheetType.None) {
+            eventInvoker(HolderEvent.HideSheet)
+        }
+    }
+}
+
+@Composable
+fun SheetScreen(
+    holderSheetType: HolderSheetType,
+    detailSheet: @Composable (photoId: String) -> Unit,
+) {
+    when (holderSheetType) {
+        is HolderSheetType.None -> Unit
+        is HolderSheetType.Detail -> {
+            detailSheet(holderSheetType.photoId)
+        }
+    }
 }
 
 @Composable
@@ -88,6 +122,7 @@ fun HolderScreenPreview() {
     HolderScreen(
         uiState = HolderUiState(
             selectedComponent = HolderComponent.PHOTOS,
+            holderSheetType = HolderSheetType.None
         ),
         photosContent = {
             Text(text = "test photo screen")
@@ -141,10 +176,10 @@ private fun HolderBody(
             randomContent()
         }
     }
-    LaunchedEffect(selectedComponent){
+    LaunchedEffect(selectedComponent) {
         val result = navController.popBackStack(selectedComponent.name, inclusive = false)
-        if(result.not()){
-            navController.navigate(selectedComponent.name){
+        if (result.not()) {
+            navController.navigate(selectedComponent.name) {
                 launchSingleTop = true
             }
         }

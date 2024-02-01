@@ -1,0 +1,23 @@
+CREATE TABLE PhotoEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    imageUrl TEXT NOT NULL,
+    imageWidth INTEGER NOT NULL,
+    imageHeight INTEGER NOT NULL
+);
+
+insertPhoto:
+INSERT INTO PhotoEntity(id, imageUrl, imageWidth, imageHeight)
+VALUES (?, ?, ?, ?);
+
+deletePhoto:
+DELETE FROM PhotoEntity
+WHERE id = ?;
+
+selectPhotoById:
+SELECT *
+FROM PhotoEntity
+WHERE id = ?;
+
+selectAllPhotos:
+SELECT *
+FROM PhotoEntity;

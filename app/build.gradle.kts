@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.myeong.prography_aos"
+    namespace = "com.myeong.prography"
     compileSdk = Dependencies.Android.COMPILE_SDK
 
     defaultConfig {
-        applicationId = "com.myeong.prography_aos"
+        applicationId = "com.myeong.prography"
         minSdk = Dependencies.Android.MIN_SDK
         targetSdk = Dependencies.Android.COMPILE_SDK
         versionCode = 1
@@ -45,7 +45,11 @@ android {
 dependencies {
     implementation(project(":feature:holder"))
     implementation(project(":feature:photos"))
+    implementation(project(":feature:detail"))
+
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
+
     implementation(project(":core:domain"))
 
     implementation(Dependencies.Android.androidCore)
@@ -58,5 +62,6 @@ dependencies {
     implementation(Dependencies.Android.Compose.material)
     implementation(Dependencies.Android.Compose.toolingPreview)
     implementation(Dependencies.JetBrains.Ktor.ktor_clien_core)
+    implementation(project(":core:ui"))
 
 }
