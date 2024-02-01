@@ -4,5 +4,6 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
     implementation(Dependencies.Android.Compose.navigation)
 }

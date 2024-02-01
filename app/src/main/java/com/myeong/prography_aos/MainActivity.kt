@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.myeong.prography.holder.HolderRoute
 import com.myeong.prography.photos.PhotosScreenRoute
@@ -15,6 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HolderRoute(
+                visibleSheetFlow = AppContainer.visibleSheetFlow,
                 photosContent = {
                     val viewModel: PhotosViewModel = viewModel(
                         factory = PhotosViewModel.provideFactory(
@@ -25,6 +25,9 @@ class MainActivity : ComponentActivity() {
                 },
                 randomContent = {
                     Text(text = "random page")
+                },
+                detailSheet = {
+                    Text(text = "detailSheet")
                 }
             )
         }
