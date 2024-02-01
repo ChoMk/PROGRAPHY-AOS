@@ -48,4 +48,15 @@ class PhotoRemoteDataSource(
     override fun loadPhotoBookmark(photoId: String): Flow<Photo> {
         throw UnsupportedOperationException("remote에서는 bookmark 미지원")
     }
+
+    override fun loadRandomPhotos(): Flow<List<Photo>> {
+        return flow {
+            val result = httpClient.requestRandomPhotos()
+            emit(
+                result.map {
+                    it.toPhoto()
+                }
+            )
+        }
+    }
 }

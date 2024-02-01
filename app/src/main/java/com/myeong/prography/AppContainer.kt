@@ -9,6 +9,7 @@ import com.myeong.prography.domain.usecase.DeletePhotoBookmarkUseCase
 import com.myeong.prography.domain.usecase.LoadPhotoBookmarksUseCase
 import com.myeong.prography.domain.usecase.LoadPhotoDetailUseCase
 import com.myeong.prography.domain.usecase.LoadPhotosUseCase
+import com.myeong.prography.domain.usecase.LoadRandomPhotosUseCase
 import com.myeong.prography.network.HttpClientFactory
 import com.myeong.prography.network.photo.PhotoHttpClient
 import com.myeong.prography.network.photo.PhotoRemoteDataSource
@@ -56,6 +57,11 @@ object AppContainer {
     }
     val loadPhotoBookmarksUseCase by lazy {
         LoadPhotoBookmarksUseCase(
+            repository = photoRepository
+        )
+    }
+    val loadRandomPhotosUseCase by lazy {
+        LoadRandomPhotosUseCase(
             repository = photoRepository
         )
     }

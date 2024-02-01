@@ -41,4 +41,8 @@ class PhotoRepositoryImpl(
     override fun loadPhotoBookmark(photoId: String): Flow<Photo?> {
         return localSource.loadPhotoBookmark(photoId)
     }
+
+    override fun loadRandomPhotos(): Flow<List<Photo>> {
+        return remoteSource.loadRandomPhotos()
+    }
 }

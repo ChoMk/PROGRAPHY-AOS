@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -35,7 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
-import com.myeong.prograph.R
+import com.myeong.prography.ui.R
 import com.myeong.prography.ui.DefaultIndicator
 import kotlinx.collections.immutable.ImmutableList
 
@@ -176,14 +177,15 @@ fun DetailBody(
         1f
     }
 
-    Box(modifier = modifier.padding(12.dp)) {
+    Box(modifier = modifier.padding(12.dp).clip(RoundedCornerShape(10.dp))) {
         SubcomposeAsyncImage(
             model = imageUrl,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(aspectRatio)
                 .clip(RoundedCornerShape(10.dp))
-                .align(Alignment.Center),
+                .align(Alignment.Center)
+                .clipToBounds(),
             contentDescription = "photo"
         )
     }
