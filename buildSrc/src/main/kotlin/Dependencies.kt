@@ -71,4 +71,9 @@ object Dependencies {
             const val sqliteDriver = "app.cash.sqldelight:sqlite-driver:$VERSION"
         }
     }
+
+    object Swipe{
+        private const val VERSION = "0.1.0"
+        const val swipeCard = "com.alexstyl.swipeablecard:swipeablecard:${VERSION}"
+    }
 }

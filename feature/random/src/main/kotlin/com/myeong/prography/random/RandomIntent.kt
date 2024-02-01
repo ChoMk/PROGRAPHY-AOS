@@ -4,20 +4,18 @@ package com.myeong.prography.random
  * Created by MyeongKi.
  */
 sealed interface RandomIntent {
-    data object ClickBookmark : RandomIntent
     data object ClickInfo : RandomIntent
-    data object ClickPopPhoto : RandomIntent
     data object ToSwipeLeft : RandomIntent
     data object ToSwipeRight : RandomIntent
     companion object {
         fun RandomIntent.toEvent(): RandomEvent {
             return when (this) {
 
-                is ClickPopPhoto, is ToSwipeLeft -> {
+                is ToSwipeLeft -> {
                     RandomEvent.PopPhoto
                 }
 
-                is ClickBookmark, is ToSwipeRight -> {
+                is ToSwipeRight -> {
                     RandomEvent.AddBookmarkAndPopPhoto
                 }
 

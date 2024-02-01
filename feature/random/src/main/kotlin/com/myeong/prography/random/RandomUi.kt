@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,8 +32,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.alexstyl.swipeablecard.Direction
+import com.alexstyl.swipeablecard.ExperimentalSwipeableCardApi
+import com.alexstyl.swipeablecard.rememberSwipeableCardState
+import com.alexstyl.swipeablecard.swipableCard
 import com.myeong.prography.domain.model.Photo
 import com.myeong.prography.ui.R
+import kotlinx.coroutines.launch
 
 /**
  * Created by MyeongKi.
@@ -60,31 +66,51 @@ fun RandomRoute(viewModel: RandomViewModel) {
         uiState.photos.reversed().forEach {
             PhotoCard(
                 photo = it,
-                onClickBookmark = {
-                    intentInvoker(RandomIntent.ClickBookmark)
+                leftSwipe = {
+                    intentInvoker(RandomIntent.ToSwipeLeft)
                 },
                 onClickInfo = {
                     intentInvoker(RandomIntent.ClickInfo)
                 },
-                onClickPopButton = {
-                    intentInvoker(RandomIntent.ClickPopPhoto)
+                rightSwipe = {
+                    intentInvoker(RandomIntent.ToSwipeRight)
                 }
             )
         }
     }
 }
 
+@OptIn(ExperimentalSwipeableCardApi::class)
 @Composable
 fun PhotoCard(
     photo: Photo,
-    onClickPopButton: () -> Unit,
-    onClickBookmark: () -> Unit,
-    onClickInfo: () -> Unit
+    onClickInfo: () -> Unit,
+    leftSwipe: () -> Unit,
+    rightSwipe: () -> Unit
 ) {
+    val state = rememberSwipeableCardState()
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .swipableCard(
+                state = state,
+                onSwiped = { direction ->
+                    if (direction == Direction.Right) {
+                        rightSwipe()
+                    } else if (direction == Direction.Left) {
+                        leftSwipe()
+
+                    }
+                },
+                onSwipeCancel = {
+                    println("The swiping was cancelled")
+                }
+            )
             .border(1.dp, colorResource(id = R.color.gray_30), RoundedCornerShape(15.dp))
+            .background(Color.White)
+
     ) {
         Box(
             modifier = Modifier
@@ -101,8 +127,7 @@ fun PhotoCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(aspectRatio)
-                    .clipToBounds()
-                ,
+                    .clipToBounds(),
                 contentDescription = "photo"
             )
         }
@@ -115,9 +140,17 @@ fun PhotoCard(
         ) {
             SmallCircleButton(
                 iconRes = R.drawable.x,
-                onClickItem = onClickPopButton,
+                onClickItem = {
+                    scope.launch {
+                        state.swipe(Direction.Left)
+                    }
+                },
             )
-            BookmarkButton(onClickItem = onClickBookmark)
+            BookmarkButton(onClickItem = {
+                scope.launch {
+                    state.swipe(Direction.Right)
+                }
+            })
             SmallCircleButton(
                 iconRes = R.drawable.info,
                 onClickItem = onClickInfo

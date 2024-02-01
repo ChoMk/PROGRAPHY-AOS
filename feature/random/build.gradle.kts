@@ -9,4 +9,5 @@ dependencies{
 
     implementation(Dependencies.Coil.compose)
     implementation(Dependencies.JetBrains.Kotlin.collectionsImmutable)
+    implementation(Dependencies.Swipe.swipeCard)
 }
