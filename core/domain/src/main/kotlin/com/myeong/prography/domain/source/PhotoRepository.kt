@@ -13,6 +13,5 @@ interface PhotoRepository {
     fun addPhotoBookmark(photo: Photo): Flow<Photo>
     fun deletePhotoBookmark(photoId: String): Flow<String>
     fun loadPhotoBookmarks(): Flow<List<Photo>>
-    fun loadPhotoBookmark(photoId: String): Flow<Photo>
-
+    fun loadPhotoBookmark(photoId: String): Flow<Photo?>
 }

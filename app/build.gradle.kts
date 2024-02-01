@@ -48,6 +48,8 @@ dependencies {
     implementation(project(":feature:detail"))
 
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
+
     implementation(project(":core:domain"))
 
     implementation(Dependencies.Android.androidCore)

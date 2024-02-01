@@ -38,7 +38,7 @@ class PhotoRepositoryImpl(
     override fun loadPhotoBookmarks(): Flow<List<Photo>> {
         return localSource.loadPhotoBookmarks()
     }
-    override fun loadPhotoBookmark(photoId: String): Flow<Photo> {
+    override fun loadPhotoBookmark(photoId: String): Flow<Photo?> {
         return localSource.loadPhotoBookmark(photoId)
     }
 }

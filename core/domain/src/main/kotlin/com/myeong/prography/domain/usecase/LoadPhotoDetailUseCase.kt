@@ -13,7 +13,7 @@ class LoadPhotoDetailUseCase(private val repository: PhotoRepository) {
         return repository.loadPhoto(photoId)
             .zip(repository.loadPhotoBookmark(photoId)) { photo, photoBookmark ->
                 photo.copy(
-                    isBookmark = photoBookmark.isBookmark
+                    isBookmark = photoBookmark?.isBookmark ?: false
                 )
             }
     }

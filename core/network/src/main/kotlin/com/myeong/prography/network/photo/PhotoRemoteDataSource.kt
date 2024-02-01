@@ -10,7 +10,7 @@ import java.lang.UnsupportedOperationException
 /**
  * Created by MyeongKi.
  */
-class RemotePhotoDataSource(
+class PhotoRemoteDataSource(
     private val httpClient: PhotoHttpClient
 ) : PhotoDataSource {
     override fun loadPhotos(requestOption: LoadPhotosOption): Flow<List<Photo>> {

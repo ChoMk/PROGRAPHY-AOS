@@ -60,7 +60,7 @@ class DetailViewModel(
 
     private val addBookmarkFlow = actionFlow
         .filterIsInstance<DetailEvent.Bookmark>()
-        .filter { viewModelState.bookmark.not() && viewModelState.photo != null }
+        .filter { (viewModelState.photo?.isBookmark ?: false).not() }
         .transform {
             emitAll(addPhotoBookmarkUseCase(viewModelState.photo!!).asResult())
         }
@@ -72,7 +72,9 @@ class DetailViewModel(
 
                 is ResultData.Success -> {
                     viewModelState.copy(
-                        bookmark = true,
+                        photo = viewModelState.photo?.copy(
+                            isBookmark = true
+                        ),
                     )
                 }
             }
@@ -82,7 +84,7 @@ class DetailViewModel(
         }
     private val deleteBookmarkFlow = actionFlow
         .filterIsInstance<DetailEvent.Bookmark>()
-        .filter { viewModelState.bookmark && viewModelState.photo != null }
+        .filter { (viewModelState.photo?.isBookmark ?: false) }
         .transform {
             emitAll(deletePhotoBookmarkUseCase(viewModelState.photo!!.id).asResult())
         }
@@ -94,7 +96,9 @@ class DetailViewModel(
 
                 is ResultData.Success -> {
                     viewModelState.copy(
-                        bookmark = false,
+                        photo = viewModelState.photo?.copy(
+                            isBookmark = false
+                        ),
                     )
                 }
             }
@@ -149,7 +153,7 @@ class DetailViewModel(
             DetailUiState.Loading
         } else {
             DetailUiState.HasData(
-                isBookmark = bookmark,
+                isBookmark = photo?.isBookmark ?: false,
                 userName = photo?.userName ?: "",
                 title = photo?.title ?: "",
                 description = photo?.description ?: "",
@@ -174,7 +178,7 @@ class DetailViewModel(
                 return DetailViewModel(
                     visibleSheetFlow,
                     loadPhotoDetailUseCase,
-                     addPhotoBookmarkUseCase,
+                    addPhotoBookmarkUseCase,
                     deletePhotoBookmarkUseCase
                 ) as T
             }
@@ -184,6 +188,5 @@ class DetailViewModel(
 
 private data class DetailViewModelState(
     val photo: Photo? = null,
-    val bookmark: Boolean = false,
     val isLoading: Boolean = false
 )
