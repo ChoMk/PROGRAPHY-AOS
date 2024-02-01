@@ -9,4 +9,5 @@ dependencies{
 
     implementation(Dependencies.Android.Compose.paging)
     implementation(Dependencies.Coil.compose)
+    implementation(Dependencies.JetBrains.Kotlin.collectionsImmutable)
 }

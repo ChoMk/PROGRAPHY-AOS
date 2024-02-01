@@ -5,6 +5,7 @@ import com.myeong.prography.database.provideDatabaseDriver
 import com.myeong.prography.domain.source.PhotoRepositoryImpl
 import com.myeong.prography.domain.usecase.AddPhotoBookmarkUseCase
 import com.myeong.prography.domain.usecase.DeletePhotoBookmarkUseCase
+import com.myeong.prography.domain.usecase.LoadPhotoBookmarksUseCase
 import com.myeong.prography.domain.usecase.LoadPhotoDetailUseCase
 import com.myeong.prography.domain.usecase.LoadPhotosUseCase
 import com.myeong.prography.network.HttpClientFactory
@@ -47,6 +48,11 @@ object AppContainer {
     }
     val deletePhotoBookmarkUseCase by lazy {
         DeletePhotoBookmarkUseCase(
+            repository = photoRepository
+        )
+    }
+    val loadPhotoBookmarksUseCase by lazy {
+        LoadPhotoBookmarksUseCase(
             repository = photoRepository
         )
     }

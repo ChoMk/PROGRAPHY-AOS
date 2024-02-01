@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
                     val viewModel: PhotosViewModel = viewModel(
                         factory = PhotosViewModel.provideFactory(
                             visibleSheetFlow = AppContainer.visibleSheetFlow,
-                            loadPhotosUseCase = AppContainer.loadPhotosUseCase
+                            loadPhotosUseCase = AppContainer.loadPhotosUseCase,
+                            loadPhotoBookmarkUseCase = AppContainer.loadPhotoBookmarksUseCase
                         )
                     )
                     PhotosScreenRoute(viewModel = viewModel)

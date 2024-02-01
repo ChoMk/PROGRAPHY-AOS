@@ -20,4 +20,5 @@ sealed interface PhotosIntent {
 
 sealed interface PhotosEvent {
     data class ShowDetailSheet(val photoId: String) : PhotosEvent
+    data object LoadPhotoBookmarks : PhotosEvent
 }

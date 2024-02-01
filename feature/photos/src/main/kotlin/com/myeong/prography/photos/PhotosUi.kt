@@ -1,10 +1,11 @@
 package com.myeong.prography.photos
 
-import com.myeong.prography.ui.DefaultIndicator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,10 +17,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,8 +41,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.myeong.prograph.R
-import kotlinx.coroutines.flow.Flow
 import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.ui.DefaultIndicator
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by MyeongKi.
@@ -46,24 +51,35 @@ import com.myeong.prography.domain.model.Photo
 
 @Composable
 fun PhotosScreenRoute(viewModel: PhotosViewModel) {
+    val bookmarksUiState = viewModel.uiState.collectAsState().value
     val pagingFlow = remember { viewModel.photosPagingFlow }
     val intentInvoker = remember {
         viewModel.intentInvoker
     }
+    val eventInvoker = remember {
+        viewModel.eventInvoker
+    }
     PhotosView(
+        bookmarksUiState = bookmarksUiState,
         photosPagingFlow = pagingFlow,
-        intentInvoker = intentInvoker
+        intentInvoker = intentInvoker,
+        eventInvoker = eventInvoker
     )
 }
 
 @Composable
 fun PhotosView(
+    bookmarksUiState: PhotoBookmarksUiState,
     photosPagingFlow: Flow<PagingData<Photo>>,
-    intentInvoker: (PhotosIntent) -> Unit
+    intentInvoker: (PhotosIntent) -> Unit,
+    eventInvoker: (PhotosEvent) -> Unit
+
 ) {
     val photosPagingItems: LazyPagingItems<Photo> = photosPagingFlow.collectAsLazyPagingItems()
     val appendLoading = remember { mutableStateOf(false) }
-
+    LaunchedEffect(true) {
+        eventInvoker(PhotosEvent.LoadPhotoBookmarks)
+    }
     LazyVerticalStaggeredGrid(
         modifier = Modifier
             .padding(10.dp)
@@ -72,6 +88,33 @@ fun PhotosView(
         verticalItemSpacing = 10.dp,
         horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally)
     ) {
+        if (bookmarksUiState.photos.isNotEmpty()) {
+            item(span = StaggeredGridItemSpan.FullLine) {
+                PhotosListTitle(title = "북마크")
+            }
+            item(span = StaggeredGridItemSpan.FullLine) {
+                Row(
+                    modifier = Modifier
+                        .height(152.dp)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    bookmarksUiState.photos.forEach { photo ->
+                        val aspectRatio = photo.imageWidth.toFloat() / photo.imageHeight.toFloat()
+                        PhotoItem(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .aspectRatio(aspectRatio),
+                            imageUrl = photo.imageUrl.small,
+                            description = photo.description
+                        ) {
+                            intentInvoker(PhotosIntent.ClickPhoto(photo))
+                        }
+                    }
+                }
+            }
+
+        }
         item(span = StaggeredGridItemSpan.FullLine) {
             PhotosListTitle(title = "최신 이미지")
         }
@@ -79,7 +122,15 @@ fun PhotosView(
             photosPagingItems[index]?.id ?: -1
         }) { index ->
             photosPagingItems[index]?.let { photo ->
-                GridPhotoItem(photo) {
+                val aspectRatio = photo.imageWidth.toFloat() / photo.imageHeight.toFloat()
+
+                PhotoItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(aspectRatio),
+                    imageUrl = photo.imageUrl.small,
+                    description = photo.description
+                ) {
                     intentInvoker(PhotosIntent.ClickPhoto(photo))
                 }
             }
@@ -122,25 +173,23 @@ fun PhotosListTitle(title: String) {
 }
 
 @Composable
-fun GridPhotoItem(
-    photo: Photo,
+fun PhotoItem(
+    modifier: Modifier,
+    imageUrl: String,
+    description: String,
     onClickItem: () -> Unit
 ) {
-    val aspectRatio = photo.imageWidth.toFloat() / photo.imageHeight.toFloat()
-    val imageSizeModifier = Modifier
-        .fillMaxWidth()
-        .aspectRatio(aspectRatio)
     Box(
-        modifier = imageSizeModifier
+        modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .clickable(onClick = onClickItem)
     ) {
         SubcomposeAsyncImage(
-            model = photo.imageUrl.small,
-            modifier = imageSizeModifier.clip(RoundedCornerShape(10.dp)),
+            model = imageUrl,
+            modifier = modifier.clip(RoundedCornerShape(10.dp)),
             loading = {
                 PhotoSkeletonItem(
-                    imageSizeModifier
+                    modifier
                 )
             },
             contentDescription = "photo"
@@ -149,7 +198,7 @@ fun GridPhotoItem(
             modifier = Modifier
                 .padding(8.dp)
                 .align(Alignment.BottomStart),
-            text = photo.description,
+            text = description,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Medium,
