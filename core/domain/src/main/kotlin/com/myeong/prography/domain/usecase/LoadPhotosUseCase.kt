@@ -1,9 +1,9 @@
-package usecase
+package com.myeong.prography.domain.usecase
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import model.Photo
-import source.PhotoRepository
+import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.domain.source.PhotoRepository
 
 /**
  * Created by MyeongKi.

@@ -6,9 +6,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import model.Photo
-import model.PhotoImageUrl
-import source.request.LoadPhotosOption
+import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.domain.model.PhotoImageUrl
+import com.myeong.prography.domain.source.request.LoadPhotosOption
 
 /**
  * Created by MyeongKi.
@@ -42,6 +42,7 @@ fun PhotoResponse.toPhoto(): Photo {
         ),
         description = description,
         title = user.name,
-        tags = tags.map { it.title }
+        tags = tags.map { it.title },
+        isBookmark = false,
     )
 }

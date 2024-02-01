@@ -1,10 +1,10 @@
-package source
+package com.myeong.prography.domain.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import kotlinx.coroutines.flow.last
-import model.Photo
-import source.request.LoadPhotosOption
+import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.domain.source.request.LoadPhotosOption
 
 /**
  * Created by MyeongKi.

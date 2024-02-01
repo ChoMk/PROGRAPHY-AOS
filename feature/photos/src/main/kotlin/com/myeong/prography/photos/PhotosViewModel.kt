@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import model.Photo
-import usecase.LoadPhotosUseCase
+import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.domain.usecase.LoadPhotosUseCase
 
 /**
  * Created by MyeongKi.

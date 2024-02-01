@@ -1,16 +1,21 @@
 package com.myeong.prography.detail
 
-import ResultData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import asResult
 import com.myeong.prography.detail.DetailIntent.Companion.toEvent
+import com.myeong.prography.domain.ResultData
+import com.myeong.prography.domain.asResult
+import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.domain.usecase.AddPhotoBookmarkUseCase
+import com.myeong.prography.domain.usecase.DeletePhotoBookmarkUseCase
+import com.myeong.prography.domain.usecase.LoadPhotoDetailUseCase
 import com.myeong.prography.ui.event.SheetEvent
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -19,8 +24,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import model.Photo
-import usecase.LoadPhotoDetailUseCase
 
 /**
  * Created by MyeongKi.
@@ -28,6 +31,8 @@ import usecase.LoadPhotoDetailUseCase
 class DetailViewModel(
     visibleSheetFlow: MutableSharedFlow<SheetEvent>,
     loadPhotoDetailUseCase: LoadPhotoDetailUseCase,
+    addPhotoBookmarkUseCase: AddPhotoBookmarkUseCase,
+    deletePhotoBookmarkUseCase: DeletePhotoBookmarkUseCase,
 ) : ViewModel() {
     private var viewModelState = DetailViewModelState()
     private val intentFlow = MutableSharedFlow<DetailIntent>()
@@ -53,10 +58,49 @@ class DetailViewModel(
             visibleSheetFlow.emit(SheetEvent.HideSheet)
         }
 
-    private val bookmarkFlow = actionFlow
+    private val addBookmarkFlow = actionFlow
         .filterIsInstance<DetailEvent.Bookmark>()
+        .filter { viewModelState.bookmark.not() && viewModelState.photo != null }
+        .transform {
+            emitAll(addPhotoBookmarkUseCase(viewModelState.photo!!).asResult())
+        }
         .map {
-            viewModelState
+            when (it) {
+                is ResultData.Loading, is ResultData.Error -> {
+                    null
+                }
+
+                is ResultData.Success -> {
+                    viewModelState.copy(
+                        bookmark = true,
+                    )
+                }
+            }
+        }
+        .onEach {
+            //notify outside
+        }
+    private val deleteBookmarkFlow = actionFlow
+        .filterIsInstance<DetailEvent.Bookmark>()
+        .filter { viewModelState.bookmark && viewModelState.photo != null }
+        .transform {
+            emitAll(deletePhotoBookmarkUseCase(viewModelState.photo!!.id).asResult())
+        }
+        .map {
+            when (it) {
+                is ResultData.Loading, is ResultData.Error -> {
+                    null
+                }
+
+                is ResultData.Success -> {
+                    viewModelState.copy(
+                        bookmark = false,
+                    )
+                }
+            }
+        }
+        .onEach {
+            //notify outside
         }
     private val updateFlow = actionFlow
         .filterIsInstance<DetailEvent.UpdateDetail>()
@@ -84,9 +128,11 @@ class DetailViewModel(
             }
         }
 
+
     val uiState = merge(
         updateFlow,
-        bookmarkFlow,
+        addBookmarkFlow,
+        deleteBookmarkFlow,
         hideSheetFlow
     )
         .filterNotNull()
@@ -96,6 +142,7 @@ class DetailViewModel(
             SharingStarted.Eagerly,
             viewModelState.toUiState()
         )
+
     private fun DetailViewModelState.toUiState(): DetailUiState {
         viewModelState = this
         return if (this.isLoading) {
@@ -119,12 +166,16 @@ class DetailViewModel(
         fun provideFactory(
             visibleSheetFlow: MutableSharedFlow<SheetEvent>,
             loadPhotoDetailUseCase: LoadPhotoDetailUseCase,
+            addPhotoBookmarkUseCase: AddPhotoBookmarkUseCase,
+            deletePhotoBookmarkUseCase: DeletePhotoBookmarkUseCase,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return DetailViewModel(
                     visibleSheetFlow,
                     loadPhotoDetailUseCase,
+                     addPhotoBookmarkUseCase,
+                    deletePhotoBookmarkUseCase
                 ) as T
             }
         }

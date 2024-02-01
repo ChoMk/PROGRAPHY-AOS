@@ -36,9 +36,9 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
-import com.myeong.prography_aos.R
+import com.myeong.prograph.R
 import kotlinx.coroutines.flow.Flow
-import model.Photo
+import com.myeong.prography.domain.model.Photo
 
 /**
  * Created by MyeongKi.

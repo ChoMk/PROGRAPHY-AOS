@@ -1,4 +1,4 @@
-package source.request
+package com.myeong.prography.domain.source.request
 
 /**
  * Created by MyeongKi.

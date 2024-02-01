@@ -2,9 +2,10 @@ package com.myeong.prography.network.photo
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import model.Photo
-import source.PhotoDataSource
-import source.request.LoadPhotosOption
+import com.myeong.prography.domain.model.Photo
+import com.myeong.prography.domain.source.PhotoDataSource
+import com.myeong.prography.domain.source.request.LoadPhotosOption
+import java.lang.UnsupportedOperationException
 
 /**
  * Created by MyeongKi.
@@ -30,5 +31,21 @@ class RemotePhotoDataSource(
                 result.toPhoto()
             )
         }
+    }
+
+    override fun addPhotoBookmark(photo: Photo): Flow<Photo> {
+        throw UnsupportedOperationException("remote에서는 bookmark 미지원")
+    }
+
+    override fun deletePhotoBookmark(photoId: String): Flow<String> {
+        throw UnsupportedOperationException("remote에서는 bookmark 미지원")
+    }
+
+    override fun loadPhotoBookmarks(): Flow<List<Photo>> {
+        throw UnsupportedOperationException("remote에서는 bookmark 미지원")
+    }
+
+    override fun loadPhotoBookmark(photoId: String): Flow<Photo> {
+        throw UnsupportedOperationException("remote에서는 bookmark 미지원")
     }
 }

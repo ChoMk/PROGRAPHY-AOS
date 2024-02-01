@@ -1,4 +1,4 @@
-package model
+package com.myeong.prography.domain.model
 
 /**
  * Created by MyeongKi.
@@ -11,7 +11,8 @@ data class Photo(
     val imageHeight: Int,
     val title: String,
     val description: String,
-    val tags: List<String>
+    val tags: List<String>,
+    val isBookmark: Boolean
 )
 
 data class PhotoImageUrl(

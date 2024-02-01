@@ -35,8 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
+import com.myeong.prograph.R
 import com.myeong.prography.ui.DefaultIndicator
-import com.myeong.prography_aos.R
 import kotlinx.collections.immutable.ImmutableList
 
 /**
@@ -51,7 +51,7 @@ fun DetailRoute(viewModel: DetailViewModel, photoId: String) {
     val eventInvoker = remember {
         viewModel.eventInvoker
     }
-    LaunchedEffect(photoId){
+    LaunchedEffect(photoId) {
         eventInvoker(DetailEvent.UpdateDetail(photoId))
     }
     when (uiState) {

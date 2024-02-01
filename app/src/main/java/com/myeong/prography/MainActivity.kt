@@ -34,6 +34,8 @@ class MainActivity : ComponentActivity() {
                         factory = DetailViewModel.provideFactory(
                             visibleSheetFlow = AppContainer.visibleSheetFlow,
                             loadPhotoDetailUseCase = AppContainer.loadPhotoDetailUseCase,
+                            addPhotoBookmarkUseCase = AppContainer.addPhotoBookmarkUseCase,
+                            deletePhotoBookmarkUseCase = AppContainer.deletePhotoBookmarkUseCase
                         )
                     )
                     DetailRoute(viewModel, photoId)

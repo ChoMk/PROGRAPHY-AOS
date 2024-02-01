@@ -1,6 +1,6 @@
 package com.myeong.prography.photos
 
-import model.Photo
+import com.myeong.prography.domain.model.Photo
 
 /**
  * Created by MyeongKi.
