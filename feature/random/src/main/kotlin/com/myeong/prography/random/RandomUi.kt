@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -90,7 +91,6 @@ fun PhotoCard(
 ) {
     val state = rememberSwipeableCardState()
     val scope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,7 +101,6 @@ fun PhotoCard(
                         rightSwipe()
                     } else if (direction == Direction.Left) {
                         leftSwipe()
-
                     }
                 },
                 onSwipeCancel = {
@@ -143,12 +142,14 @@ fun PhotoCard(
                 onClickItem = {
                     scope.launch {
                         state.swipe(Direction.Left)
+                        leftSwipe()
                     }
                 },
             )
             BookmarkButton(onClickItem = {
                 scope.launch {
                     state.swipe(Direction.Right)
+                    rightSwipe()
                 }
             })
             SmallCircleButton(
