@@ -20,13 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
@@ -63,6 +63,13 @@ fun RandomRoute(viewModel: RandomViewModel) {
             .padding(horizontal = 24.dp)
             .padding(top = 28.dp)
             .padding(bottom = 44.dp)
+            .shadow(
+                elevation = 25.dp,
+                shape = RoundedCornerShape(10.dp),
+                clip = false,
+                ambientColor = Color.Black.copy(alpha = 0.12f),
+                spotColor = Color.Black.copy(alpha = 0.12f)
+            )
     ) {
         uiState.photos.reversed().forEach {
             PhotoCard(
@@ -107,8 +114,10 @@ fun PhotoCard(
                     println("The swiping was cancelled")
                 }
             )
-            .border(1.dp, colorResource(id = R.color.gray_30), RoundedCornerShape(15.dp))
+            .clip(RoundedCornerShape(15.dp))
             .background(Color.White)
+            .border(1.dp, colorResource(id = R.color.gray_30), RoundedCornerShape(15.dp))
+
 
     ) {
         Box(
